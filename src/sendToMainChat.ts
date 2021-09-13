@@ -1,4 +1,4 @@
-import { bot } from './bot';
+import Telegraf from 'telegraf';
 import config from './config';
 import { CardResponse, CardsResponse, Shop } from './types';
 import { fetchCards } from './utils';
@@ -34,6 +34,7 @@ const getShopMsg = ({ link, name }: Shop) => {
 
     const cardsMsg = getCardsMsg(cardsData);
 
+    const bot = new Telegraf(config.BOT_TOKEN!);
     await bot.telegram.sendMessage(config.TELEGRAM_MAIN_CHAT!, cardsMsg, {
         parse_mode: 'HTML',
         disable_web_page_preview: true,
