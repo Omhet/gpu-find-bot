@@ -1,6 +1,9 @@
 import axios from 'axios';
+import { CardsResponse } from './types';
 
-export const fetchCardPrices = async () => {
-    const { data } = await axios.get('http://localhost:3000/prices');
+export const fetchCards = async () => {
+    const { data } = await axios.get<CardsResponse>(
+        'http://localhost:3000/prices'
+    );
     return data;
 };

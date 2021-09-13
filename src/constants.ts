@@ -1,5 +1,5 @@
 import { ExtraPhoto } from 'telegraf/typings/telegram-types';
 
-export const extraPhotoOptions: ExtraPhoto = {
+export const extraMessageOptions: ExtraPhoto = {
     parse_mode: 'HTML',
 };
