@@ -1,42 +1,37 @@
 import Telegraf from 'telegraf';
 import config from './config';
-import { CardResponse, CardsResponse, Shop } from './types';
+import {
+    getAcceptablePriceCardsMsg,
+    getCardsMsg,
+    sendMessage,
+} from './msgUtils';
+import { CardsResponse } from './types';
 import { fetchCards } from './utils';
 
-const formatter = new Intl.NumberFormat('ru-RU', {
-    style: 'currency',
-    currency: 'RUB',
-    minimumFractionDigits: 0,
-});
+const bot = new Telegraf(config.BOT_TOKEN!);
+const date = new Date();
+const currentHours = date.getHours();
 
-const getCardsMsg = (cardsData: CardsResponse) => {
-    return Object.entries(cardsData)
-        .map(([model, cardData]) => `${model}:\n\n${getCardMsg(cardData)}`)
-        .join('\n\n\n');
-};
-
-const getCardMsg = ({ stats }: CardResponse) =>
-    Object.entries(stats)
-        .map(
-            ([stat, { shop, price, name }]) =>
-                `${stat}: ${formatter.format(price)}\n${name}\n${getShopMsg(
-                    shop
-                )}`
-        )
-        .join('\n\n');
-
-const getShopMsg = ({ link, name }: Shop) => {
-    return `<a href="${link}">${name}</a>`;
+const sendMessageIfPriceIsAcceptable = async (cardsData: CardsResponse) => {
+    const allCards = Object.values(cardsData).flatMap(({ priceStats }) =>
+        Object.values(priceStats)
+    );
+    const acceptablePriceCards = allCards.filter(
+        ({ isAcceptablePrice }) => isAcceptablePrice
+    );
+    const msg = getAcceptablePriceCardsMsg(acceptablePriceCards);
+    await sendMessage(bot, msg);
 };
 
 (async () => {
     const cardsData = await fetchCards();
 
-    const cardsMsg = getCardsMsg(cardsData);
+    if (currentHours % 3 === 0) {
+        await sendMessageIfPriceIsAcceptable(cardsData);
+    }
 
-    const bot = new Telegraf(config.BOT_TOKEN!);
-    await bot.telegram.sendMessage(config.TELEGRAM_MAIN_CHAT!, cardsMsg, {
-        parse_mode: 'HTML',
-        disable_web_page_preview: true,
-    });
+    if (currentHours === 9) {
+        const msg = getCardsMsg(cardsData);
+        await sendMessage(bot, msg);
+    }
 })();

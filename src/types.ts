@@ -2,7 +2,7 @@ export type CardsResponse = Record<string, CardResponse>;
 
 export type CardResponse = {
     cards: Card[];
-    stats: Stats;
+    priceStats: Stats;
 };
 
 export type Stats = {
@@ -20,4 +20,6 @@ export type Card = {
     name: string;
     shop: Shop;
     price: number;
+    mhPrice: number;
+    isAcceptablePrice: boolean;
 };
