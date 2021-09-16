@@ -26,11 +26,11 @@ const sendMessageIfPriceIsAcceptable = async (cardsData: CardsResponse) => {
 (async () => {
     const cardsData = await fetchCards();
 
-    if (currentHours % 3 === 0) {
-        await sendMessageIfPriceIsAcceptable(cardsData);
-    }
+    await sendMessage(bot, `Hours: ${currentHours}`);
 
-    if (currentHours === 9) {
+    await sendMessageIfPriceIsAcceptable(cardsData);
+
+    if (currentHours > 9 && currentHours < 11) {
         const msg = getCardsMsg(cardsData);
         await sendMessage(bot, msg);
     }
