@@ -21,14 +21,25 @@ export const getCardsMsg = (cards: Card[]) => {
     return `${cards.map((card) => getCardMsg(card)).join('\n\n')}`;
 };
 
-export const getCardMsg = ({ price, name, shop, mhPrice }: Card) =>
-    `Цена: ${formatter.format(price)}\nЦена за 1 Mh: ${formatter.format(
+export const getCardMsg = ({
+    price,
+    name,
+    shop,
+    mhPrice,
+    profitability,
+    payBack,
+}: Card) =>
+    `${name}\n${getShopMsg(shop)}\nЦена: ${formatter.format(
+        price
+    )}\nЦена за 1 Mh: ${formatter.format(
         mhPrice
-    )}\n${name}\n${getShopMsg(shop)}`;
+    )}\nМайнит в день: ${formatter.format(
+        profitability
+    )}\nОкупается за <b>${payBack}</b> месяцев`;
 
 export const getStatMsg = ({ priceStats }: CardResponse) =>
     Object.entries(priceStats)
-        .map(([stat, card]) => `${stat}: ${getCardMsg(card)}}`)
+        .map(([stat, card]) => `${stat}:\n${getCardMsg(card)}}`)
         .join('\n\n');
 
 export const getShopMsg = ({ link, name }: Shop) => {

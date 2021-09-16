@@ -22,4 +22,6 @@ export type Card = {
     price: number;
     mhPrice: number;
     isAcceptablePrice: boolean;
+    profitability: number;
+    payBack: number;
 };
