@@ -8,7 +8,7 @@ export const formatter = new Intl.NumberFormat('ru-RU', {
     minimumFractionDigits: 0,
 });
 
-export const getCardsMsg = (cardsData: CardsResponse) => {
+export const getStatsCardsMsg = (cardsData: CardsResponse) => {
     return Object.entries(cardsData)
         .map(([model, cardData]) => getStatsCardMsg(model, cardData))
         .join('\n\n\n');
@@ -17,14 +17,14 @@ export const getCardsMsg = (cardsData: CardsResponse) => {
 export const getStatsCardMsg = (model: string, cardData: CardResponse) =>
     `${model}:\n\n${getStatMsg(cardData)}`;
 
-export const getAcceptablePriceCardsMsg = (cards: Card[]) => {
-    return `Адекватная цена:\n\n${cards
-        .map((card) => getCardMsg(card))
-        .join('\n\n')}`;
+export const getCardsMsg = (cards: Card[]) => {
+    return `${cards.map((card) => getCardMsg(card)).join('\n\n')}`;
 };
 
-export const getCardMsg = ({ price, name, shop }: Card) =>
-    `${formatter.format(price)}\n${name}\n${getShopMsg(shop)}`;
+export const getCardMsg = ({ price, name, shop, mhPrice }: Card) =>
+    `Цена: ${formatter.format(price)}\nЦена за 1 Mh: ${formatter.format(
+        mhPrice
+    )}\n${name}\n${getShopMsg(shop)}`;
 
 export const getStatMsg = ({ priceStats }: CardResponse) =>
     Object.entries(priceStats)
