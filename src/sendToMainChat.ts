@@ -23,6 +23,17 @@ const sendMessageIfPriceIsAcceptable = async (cardsData: CardsResponse) => {
     }
 };
 
+const send = async () => {
+    await sendMessage(bot, 'Получаю данные...');
+
+    const cardsData = await fetchCards();
+
+    const msg = getStatsCardsMsg(cardsData);
+    await sendMessage(bot, msg);
+
+    await sendMessageIfPriceIsAcceptable(cardsData);
+};
+
 (async () => {
     if (config.IS_DEV) {
         const cardsData = await fetchCards();
@@ -35,21 +46,19 @@ const sendMessageIfPriceIsAcceptable = async (cardsData: CardsResponse) => {
         return;
     }
 
-    try {
-        if (currentHours % 3 == 0) {
-            await sendMessage(bot, 'Получаю данные...');
+    let isSent = false;
+    let tries = 0;
 
-            const cardsData = await fetchCards();
-
-            if (currentHours > 9 && currentHours < 13) {
-                const msg = getStatsCardsMsg(cardsData);
-                await sendMessage(bot, msg);
+    if (currentHours % 4 == 0) {
+        while (!isSent || tries < 4) {
+            try {
+                await send();
+                isSent = true;
+            } catch (error) {
+                await sendMessage(bot, `Error fetching cards: ${error}`);
+                tries++;
             }
-
-            await sendMessageIfPriceIsAcceptable(cardsData);
         }
-    } catch (error) {
-        await sendMessage(bot, `Error fetching cards: ${error}`);
     }
 
     await sendMessage(bot, `Hours: ${currentHours}`);
