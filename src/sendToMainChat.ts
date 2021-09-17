@@ -6,7 +6,7 @@ import { fetchCards } from './utils';
 
 const bot = new Telegraf(config.BOT_TOKEN!);
 const date = new Date();
-const currentHours = date.getHours();
+const currentHours = date.getHours() + 3;
 
 const sendMessageIfPriceIsAcceptable = async (cardsData: CardsResponse) => {
     for (const [model, cardData] of Object.entries(cardsData)) {
