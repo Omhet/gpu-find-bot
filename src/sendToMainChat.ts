@@ -35,28 +35,32 @@ const send = async () => {
 };
 
 (async () => {
-    if (config.IS_DEV) {
-        const cardsData = await fetchCards();
+    // if (config.IS_DEV) {
+    //     const cardsData = await fetchCards();
 
-        const msg = getStatsCardsMsg(cardsData);
-        await sendMessage(bot, msg);
+    //     const msg = getStatsCardsMsg(cardsData);
+    //     await sendMessage(bot, msg);
 
-        await sendMessageIfPriceIsAcceptable(cardsData);
+    //     await sendMessageIfPriceIsAcceptable(cardsData);
 
-        return;
-    }
+    //     return;
+    // }
 
     let isSent = false;
     let tries = 0;
 
     if (currentHours % 4 == 0) {
-        while (!isSent || tries < 4) {
+        while (true) {
             try {
                 await send();
                 isSent = true;
             } catch (error) {
                 await sendMessage(bot, `Error fetching cards: ${error}`);
                 tries++;
+            }
+
+            if (isSent || tries >= 4) {
+                break;
             }
         }
     }
