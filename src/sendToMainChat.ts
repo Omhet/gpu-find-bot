@@ -63,7 +63,6 @@ const send = async () => {
                 break;
             }
         }
+        await sendMessage(bot, `Hours: ${currentHours}`);
     }
-
-    await sendMessage(bot, `Hours: ${currentHours}`);
 })();
